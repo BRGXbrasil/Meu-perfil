@@ -28,3 +28,5 @@ Node 24. Execute `npm ci`, `npx playwright install --with-deps chromium` e `npm 
 Testes: navegação e falha seguida de nova tentativa, preservação do envio pendente, validação de payload, consentimentos recusados, acesso do banco, idempotência e limites. No Hub também há testes de paginação, renderização segura e concorrência de sessões.
 
 Em falha de confirmação, o envio exato fica preservado na memória da página, com edição temporariamente bloqueada para evitar que uma tentativa já salva seja reenviada com dados diferentes. Fechar ou recarregar a página descarta essa memória. A cliente pode pedir correção ou exclusão pela recepção; estes pedidos devem ser executados por administração autorizada no banco.
+
+A integração do Sites usa também `elab-profile-read`, acessível somente por solicitações com assinatura verificada. O formulário é idêntico à cópia E.Lab/meu-perfil. A confirmação diz “Seu perfil foi salvo.” e não confirma agendamento.

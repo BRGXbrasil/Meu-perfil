@@ -41,11 +41,11 @@ test('form: edição, pular, erro recuperável e confirmação do servidor',asyn
  await page.locator('#privacy').check();
  await page.locator('#next').click();
  await page.getByRole('alert').waitFor();
- assert.equal(await page.getByText('Seu perfil foi recebido.').count(),0,'falha não confirma envio');
+ assert.equal(await page.getByText('Seu perfil foi salvo.').count(),0,'falha não confirma envio');
  assert.equal(await page.locator('#privacy').isDisabled(),true,'uncertain outcome keeps exact retry snapshot');
  assert.equal(await page.locator('#back').isDisabled(),true);
  await page.locator('#next').click();
- await page.getByText('Seu perfil foi recebido.').waitFor();
+ await page.getByText('Seu perfil foi salvo.').waitFor();
  assert.deepEqual(submitted,firstSubmission);
  assert.equal(calls,2);
  assert.equal(submitted.answers.name,'Cliente fictícia');
@@ -55,4 +55,14 @@ test('form: edição, pular, erro recuperável e confirmação do servidor',asyn
  assert.equal(await page.evaluate(()=>localStorage.length),0);
  assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
  }finally{await browser.close();server.close();}
+});
+test('revised copy has a short cover and no auxiliary phrases on questions',async()=>{
+ const server=createServer((req,res)=>{res.setHeader('Content-Type','text/html');res.end(readFileSync(new URL('../index.html',import.meta.url)));}).listen(0,'127.0.0.1');await new Promise(r=>server.once('listening',r));
+ const browser=await chromium.launch({executablePath:process.env.CHROMIUM_PATH,headless:true,args:['--no-sandbox']});
+ try{
+  const page=await browser.newPage();await page.goto(`http://127.0.0.1:${server.address().port}`);
+  assert.equal(await page.getByText('Responda só o que quiser.',{exact:true}).count(),0);
+  await page.locator('#start').click();
+  for(let i=0;i<14;i++){assert.equal(await page.locator('.hint').count(),0);assert.equal(await page.locator('#skip').isVisible(),true);await page.locator('#skip').click()}
+ }finally{await browser.close();server.close()}
 });

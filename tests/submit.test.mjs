@@ -27,3 +27,9 @@ test('rejects excessive bodies and wrong origins',async()=>{
  assert.equal((await handler(request({...valid(),extra:'x'.repeat(50000)}))).status,413);
  const req=request(valid());req.headers.set('origin','https://evil.example');assert.equal((await handler(req)).status,403);
 });
+test('accepts exact Hub origin and rejects a lookalike origin',async()=>{
+ const handler=createHandler({publicKey:'public-test',save:async()=>({saved:true})});
+ for(const [origin,status] of [['https://elab-unificado-ops.dazzlingbegonia2.chatgpt.site',201],['https://elab-unificado-ops.dazzlingbegonia2.chatgpt.site.evil.example',403]]){
+  const req=request(valid());req.headers.set('origin',origin);const response=await handler(req);assert.equal(response.status,status);if(status===201)assert.equal(response.headers.get('access-control-allow-origin'),origin);
+ }
+});

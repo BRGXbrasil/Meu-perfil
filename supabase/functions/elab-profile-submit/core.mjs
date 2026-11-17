@@ -1,6 +1,6 @@
 const answerKeys=new Set(['name','whatsapp','birthday','discovery','ritual','service','goal','hair','routine','care','change','products','inspiration','car']);
 const consentKeys=['consentContact','consentMarketing','consentImage','consentPrivacy'];
-const allowedOrigins=new Set(['https://brgxbrasil.github.io']);
+const allowedOrigins=new Set(['https://brgxbrasil.github.io','https://elab-unificado-ops.dazzlingbegonia2.chatgpt.site']);
 export function createHandler({publicKey,save}){
  return async function handle(req){
   const origin=req.headers.get('origin');
